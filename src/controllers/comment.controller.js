@@ -2,7 +2,9 @@ import mongoose, { isValidObjectId } from "mongoose"
 import { Comment } from "../models/comment.model.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+import { Video } from "../models/video.model.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
+import { Tweet } from "../models/tweet.model.js"
 
 const getVideoComments = asyncHandler(async (req, res) => {
     //TODO: get all comments for a video
@@ -15,6 +17,12 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
     if (!isValidObjectId(videoId)) {
         throw new ApiError(401, "Invalid video id")
+    }
+
+    const video = await Video.findById(videoId)
+
+    if (!video) {
+        throw new ApiError(404, "Video not found")
     }
 
     const videoComments = await Comment.aggregate([
@@ -103,6 +111,12 @@ const addCommentToVideo = asyncHandler(async (req, res) => {
 
     if (!content) {
         throw new ApiError(400, "Comment content is required")
+    }
+
+    const video = await Video.findById(videoId)
+
+    if (!video) {
+        throw new ApiError(404, "Video not found")
     }
 
     const comment = await Comment.create({
@@ -210,6 +224,12 @@ const getTwetComments = asyncHandler(async (req, res) => {
         throw new ApiError(401, "Invalid tweet id")
     }
 
+    const tweet = await Tweet.findById(tweetId)
+
+    if (!tweet) {
+        throw new ApiError(404, "Tweet not found")
+    }
+
     const tweetComments = await Comment.aggregate([
         {
             $match: {
@@ -296,6 +316,12 @@ const addCommentToTweet = asyncHandler(async (req, res) => {
 
     if (!content) {
         throw new ApiError(400, "Comment content is required")
+    }
+
+    const tweet = await Tweet.findById(tweetId)
+
+    if (!tweet) {
+        throw new ApiError(404, "Tweet not found")
     }
 
     const comment = await Comment.create({

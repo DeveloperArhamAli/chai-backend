@@ -61,7 +61,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                $first: "$owner"
+                owner: {
+                    $first: "$owner"
+                }
             }
         },
         {
@@ -99,7 +101,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid playlist id")
     }
 
-    const playlist = Playlist.aggregate([
+    const playlist = await Playlist.aggregate([
         {
             $match: {
                 _id: new mongoose.Types.ObjectId(playlistId)
@@ -134,7 +136,9 @@ const getPlaylistById = asyncHandler(async (req, res) => {
                     },
                     {
                         $addFields: {
-                            $first: "$owner"
+                            owner: {
+                                $first: "$owner"
+                            }
                         }
                     },
                     {
@@ -169,7 +173,9 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                $first: "$owner"
+                owner: {
+                    $first: "$owner"
+                }
             }
         },
         {
@@ -178,7 +184,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
                 description: 1,
                 videos: 1,
                 owner: 1,
-                cretedAt: 1
+                createdAt: 1
             }
         }
     ])
@@ -218,7 +224,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(400, "You are not allowed to add videos to this playlist")
     }
 
-    const updatedPlaylist = Playlist.findByIdAndUpdate(
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
         playlistId,
         {
             $addToSet: {
@@ -234,7 +240,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
 
     return res
     .status(200)
-    .json(new ApiResponse(200, updatePlaylist, "Video added to playlist successfully"))
+    .json(new ApiResponse(200, updatedPlaylist, "Video added to playlist successfully"))
 
 })
 
@@ -280,7 +286,7 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
 
     return res
     .status(200)
-    .json(new ApiResponse(200, updatePlaylist, "Video removed form playlist successfully"))
+    .json(new ApiResponse(200, updatedPlaylist, "Video removed from playlist successfully"))
 
 })
 
@@ -356,7 +362,7 @@ const updatePlaylist = asyncHandler(async (req, res) => {
 
     return res
     .status(200)
-    .json(new ApiResponse(200, updatePlaylist, "Playlist updated successfully"))
+    .json(new ApiResponse(200, updatedPlaylist, "Playlist updated successfully"))
 })
 
 export {

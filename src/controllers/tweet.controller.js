@@ -86,6 +86,14 @@ const getUserTweets = asyncHandler(async (req, res) => {
             }
         },
         {
+            $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "tweet",
+                as: "comments",
+            }
+        },
+        {
             $sort: {
                 createdAt: -1
             }
@@ -104,6 +112,9 @@ const getUserTweets = asyncHandler(async (req, res) => {
                 },
                 owner: {
                     $first: "$owner"
+                },
+                commentsCount: {
+                    $size: "$comments"
                 }
             }
         },
@@ -115,6 +126,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
                 owner: 1,
                 createdAt: 1,
                 likesCount: 1,
+                commentsCount: 1,
                 isLiked: 1,
             }
         }

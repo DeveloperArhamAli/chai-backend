@@ -20,7 +20,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
                 }
             }
         }
-    ])
+    ]);
 
     const videoDetails = await Video.aggregate([
         {
@@ -62,13 +62,13 @@ const getChannelStats = asyncHandler(async (req, res) => {
     ])
 
     const channelStats = {
-        totalSubscribers: totalSubscribers[0].subscribersCount,
-        totalLikes: videoDetails[0].totalLikes,
-        totalVideos: videoDetails[0].totalVideos,
-        totalViews: videoDetails[0].totalViews
+        totalSubscribers: totalSubscribers[0]?.subscribersCount || 0,
+        totalLikes: videoDetails[0]?.totalLikes || 0,
+        totalVideos: videoDetails[0]?.totalVideos || 0,
+        totalViews: videoDetails[0]?.totalViews || 0
     }
 
-    if (!channelStats.length) {
+    if (!channelStats) {
         throw new ApiError(404, "Channel stats not found")
     }
 
@@ -78,7 +78,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 })
 
 const getChannelVideos = asyncHandler(async (req, res) => {
-    const videos = Video.aggregate([
+    const videos = await Video.aggregate([
         {
             $match: {
                 owner: new mongoose.Types.ObjectId(req.user?._id)
