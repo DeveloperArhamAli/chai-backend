@@ -1,5 +1,5 @@
 # **Chai aur Backend**
-A production-ready youtube + twitter application built with **React.js** (Vite). This application enables users to create, edit, view, and delete videos, tweets etc offering a seamless and dynamic user experience.
+A production-ready youtube + twitter application built with **Node JS** (Express JS). This application enables users to create, edit, view, and delete videos, tweets etc offering a seamless and dynamic user experience.
 
 ---
 
